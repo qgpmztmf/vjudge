@@ -2,6 +2,10 @@
 #include <vector>
 using namespace std;
 
+#define MAX 100
+#define CMAX 100001
+int table[MAX][MAX];
+
 int minOf(int a, int b) {
 	return a < b ? a : b;
 }
@@ -9,11 +13,18 @@ int minOf(int a, int b) {
 int main() {
   int numv;
   while(cin >> numv) {
-  	vector<int> l(numv, 100001);
+  	vector<int> l(numv, CMAX);
 	vector<int> v(numv, 0);
-	vector<vector<int> > table(numv, vector<int>(numv, 100001));
+    //vector<vector<int> > table(numv, vector<int>(numv, CMAX));
 	int id, adjId;
 	int degree, w;
+
+	for(int i = 0; i < numv; i++) {
+		for(int j = 0; j < numv; j++) {
+			table[i][j] = table[j][i] = CMAX;
+		}
+	}
+
 	for(int i = 0; i < numv; i++) {
 		cin >> id >> degree;
 		table[i][i] = 0;
@@ -33,12 +44,13 @@ int main() {
 		for(int j = 0; j < numv; j++) {
 			if (!v[j]){
 				l[j] = minOf(l[j], l[uId] + table[uId][j]);
-				if(l[j] < minl) {
+				if(l[j] <= minl) {
 					newUId = j;
 					minl = l[j];
 				}
 			}
 		}
+		
 		uId = newUId;
 		v[uId] = 1;
 	
