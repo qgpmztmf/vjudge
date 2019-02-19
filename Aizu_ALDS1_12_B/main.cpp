@@ -36,27 +36,25 @@ int main() {
 	
 	l[0] = 0; 
 	int uId = 0;
-	v[uId] = 1;
 	
-	while(1) {
+	for(int ii = 0; ii < numv - 1; ii++) {
 		int minl = CMAX;
 		int newUId = -1;
-		for(int j = 0; j < numv; j++) {
-			if (!v[j]){
-				if(table[uId][j] < CMAX) {
-					l[j] = minOf(l[j], l[uId] + table[uId][j]);
-				}
-				if(l[j] <= minl) {
-					newUId = j;
-					minl = l[j];
-				}
+		for(int i = 0; i < numv; i++) {
+			if(!v[i] && l[i] <= minl) {
+				minl = l[i];
+				newUId = i;
 			}
 		}
-		if(newUId == -1) {
-			break;
-		}
+
 		uId = newUId;
 		v[uId] = 1;
+		
+		for(int j = 0; j < numv; j++) {
+			if (!v[j] && table[uId][j] < CMAX){
+				l[j] = minOf(l[j], l[uId] + table[uId][j]);
+			}
+		}
 	}
 	for(int i = 0; i < numv; i++) {
 		cout << i << " "  << l[i] << endl;
