@@ -5,6 +5,7 @@ using namespace std;
 #define MAX 105
 #define CMAX (1 << 21)
 int table[MAX][MAX];
+int table2[MAX][MAX];
 int l[MAX];
 int v[MAX];
 
@@ -19,18 +20,38 @@ int main() {
     l[i] = CMAX;
 	v[i] = 0;
   	for(int j = 0; j < numv; j++) {
-  		table[i][j] = CMAX;
+  		table[i][j] = table[j][i] = CMAX;
+  		table2[i][j] = CMAX;
   	}
   }
   
   for(int i = 0; i < numv; i++) {
   	cin >> id >> degree;
   	table[i][i] = 0;
+  	table2[i][i] = 0;
   	for(int j = 0; j < degree; j++) {
-  		cin >> adjId;
-		cin >> table[id][adjId];
+  		cin >> adjId >> w;
+  		table[id][adjId] = table[adjId][id] = w;
+  		table2[id][adjId] = w;
   	}
   }
+  
+
+  for(int i = 0; i < numv; i++) {
+  	for(int j = 0; j < numv; j++) {
+  		cout << table[i][j] << " ";
+	}
+	cout << endl;
+  }
+  cout <<endl;
+  
+  for(int i = 0; i < numv; i++) {
+  	for(int j = 0; j < numv; j++) {
+  		cout << table2[i][j] << " ";
+	}
+	cout << endl;
+  }
+  cout <<endl;
   
   l[0] = 0; 
   
@@ -60,5 +81,4 @@ int main() {
   
   return 0;
 }
-
 
