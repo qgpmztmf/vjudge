@@ -1,10 +1,11 @@
 #include <iostream>
 #include <vector>
 using namespace std;
+int p, r;
 
 int main() {
-  int n;
-  vector<int> v;
-  std::cout << "ss" << '\n';
+  while(cin >> p >> r && p) {
+    cout << 2 * p * r / (p + r) << endl;
+  }
   return 0;
 }
