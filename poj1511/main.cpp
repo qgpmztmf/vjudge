@@ -1,83 +1,90 @@
 #include <iostream>
+#include <queue>
+#include <cstdio>
+#include <cstring>
 using namespace std;
-const int MAXN = 1005;
-const int MAXP = 1000000005;
-int N, P, Q, start, end, table[MAXN][MAXN], btable[MAXN][MAXN], d[MAXN], bd[MAXN], v[MAXN], bv[MAXN];
+const int MAXN = 1000010;
+const long long INF = 1000000009;
+struct Edge{
+  int v;
+  long long cost;
+  Edge(int _v, int _cost): v(_v), cost(_cost){}
+};
+vector<Edge> E[MAXN];
+vector<Edge> dE[MAXN];
+
+void addedge(int u, int v, int w, vector<Edge> E[]) {
+  E[u].push_back(Edge(v, w));
+}
+
+
+bool v[MAXN];
+int cnt[MAXN];
+long long d[MAXN];
+bool spfa(int n, vector<Edge> E[]) {
+  memset(v, false, sizeof(v));
+  for(int i = 1; i <= n; i++) {
+    d[i] = INF;
+  }
+
+  queue<int> q;
+  d[1] = 0;
+  v[1] = true;
+  q.push(1);
+  memset(cnt, 0, sizeof(cnt));
+  cnt[1] = 1;
+
+  while(!q.empty()) {
+    int u = q.front();
+    q.pop();
+    v[u] = false;
+    for(int i = 0; i < E[u].size(); i++) {
+      int t = E[u][i].v;
+      int cost = E[u][i].cost;
+      if(d[t] > d[u] + cost) {
+        d[t] = d[u] + cost;
+        if(!v[t]) {
+          v[t] = true;
+          q.push(t);
+          if(++cnt[t] > n) {
+            return false;
+          }
+        }
+      }
+    }
+  }
+  return true;
+}
 
 int main() {
-  cin >> N;
-  for(int k = 0; k < N; k++) {
-
-    cin >> P >> Q;
-
-    for(int i = 1; i <= P; i++) {
-      for(int j = 1; j <= P; j++) {
-        table[i][j] = MAXP;
-        btable[i][j] = MAXP;
-      }
-      table[i][i] = 0;
-      btable[i][i] = 0;
-      d[i] = MAXP;
-      bd[i] = MAXP;
-      v[i] = 0;
-      bv[i] = 0;
-    }
-
+  int N, P, Q, u, v, w;
+  long long ans;
+  scanf("%d", &N);
+  //cin >> N;
+  while(N--) {
+    ans = 0;
+    scanf("%d%d", &P, &Q);
+    //cin >> P >> Q;
     for(int i = 0; i < Q; i++) {
-      cin >> start >> end;
-      cin >> table[start][end];
-      btable[end][start] = table[start][end];
+      scanf("%d%d%d", &u, &v, &w);
+      //cin >> u >> v >> w;
+      addedge(u, v, w, E);
+      addedge(v, u, w, dE);
     }
-
-    //for(int i = 1; i <= P; i++) {
-    //  for(int j = 1; j <= P; j++) {
-    //    cout << table[i][j] << " ";
-    //  }
-    //  cout << endl;
-    //}
-
-    d[1] = 0;
-    for(int ii = 0; ii < P; ii++) {
-      int minl = MAXP;
-      int u = -1;
-      for(int i = 1; i <= P; i++) {
-        if(!v[i] && d[i] < minl) {
-          minl = d[i];
-          u = i;
-        }
-      }
-      v[u] = 1;
-      for(int i = 1; i <= P; i++) {
-        if(!v[i] && table[u][i] != MAXP && d[i] > d[u] + table[u][i]) {
-          d[i] = d[u] + table[u][i];
-        }
-      }
-    }
-
-    bd[1] = 0;
-    for(int ii = 0; ii < P; ii++) {
-      int minl = MAXP;
-      int u = -1;
-      for(int i = 1; i <= P; i++) {
-        if(!bv[i] && bd[i] < minl) {
-          minl = bd[i];
-          u = i;
-        }
-      }
-      bv[u] = 1;
-      for(int i = 1; i <= P; i++) {
-        if(!bv[i] && btable[u][i] != MAXP && bd[i] > bd[u] + btable[u][i]) {
-          bd[i] = bd[u] + btable[u][i];
-        }
-      }
-    }
-
-    int ans = 0;
+    spfa(P, E);
     for(int i = 1; i <= P; i++) {
       ans += d[i];
-      ans += bd[i];
+    }
+    spfa(P, dE);
+    for(int i = 1; i <= P; i++) {
+      ans += d[i];
     }
     cout << ans << endl;
+
+    for(int i = 0; i <= P; i++) {
+        vector<Edge>().swap(E[i]);
+        vector<Edge>().swap(dE[i]);
+    }
   }
   return 0;
 }
